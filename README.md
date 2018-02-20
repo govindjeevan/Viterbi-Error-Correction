@@ -1,0 +1,1 @@
+MATLAB code for  convolution code (2, 1, 10) decoding with g1 = 110111 and g2  =  11101101  and  the  analysis  of  %  of  error  detection  and  correction  using Viterbidecodingand path metric
