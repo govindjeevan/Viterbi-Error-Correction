@@ -6,6 +6,17 @@ firstq= 1;
 lastq  = 1;
 
 
+function x=isEmpty()
+global lastq;
+global queue;
+global firstq;
+
+if firstq==lastq
+    x=1;
+else x=0;
+end
+
+end
 function q= enqueue(state,time)
 global lastq;
 global queue;

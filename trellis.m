@@ -1,5 +1,7 @@
 
+import "q.m"
 
+enqueue(1,2)
 
 i=0;j=0;
 
@@ -28,10 +30,10 @@ while time <8
     
     x=state;
     for i=0:2^time
-    state=x;
+        
     state=trellisdiag(state+1,time+1,rem(i,2)+1);
     
-    trellisdiag=path(state,time+1,trellisdiag);
+    trellisdiag=path(state,time,trellisdiag);
 
     state=x; 
     end
