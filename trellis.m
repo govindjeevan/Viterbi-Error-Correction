@@ -23,32 +23,19 @@ time=0;
 
 trellisdiag=path(state,time,trellisdiag)
 
-time=time+1;
-trellisdiag=path(trellisdiag(state+1,time,1),time,trellisdiag)
-trellisdiag=path(trellisdiag(state+1,time,2),time,trellisdiag)
-
-time=time+1;
-
-state1=trellisdiag(state+1,time,1);
-state2=trellisdiag(state+1,time,2);
-trellisdiag=path(trellisdiag(state1+1,time,1),time,trellisdiag)
-trellisdiag=path(trellisdiag(state1+1,time,2),time,trellisdiag)
-trellisdiag=path(trellisdiag(state2+1,time,1),time,trellisdiag)
-trellisdiag=path(trellisdiag(state2+1,time,2),time,trellisdiag)
 
 while time <8
     
     x=state;
-    for i=0:time
-    state=trellisdiag(state+1,time,rem(i,2));
+    for i=0:2^time
+    state=x;
+    state=trellisdiag(state+1,time+1,rem(i,2)+1);
     
-    trellisd
-    iag=path(state,time,trellisdiag);
+    trellisdiag=path(state,time+1,trellisdiag);
 
     state=x; 
     end
     
-
 time=time+1;
 end
 
