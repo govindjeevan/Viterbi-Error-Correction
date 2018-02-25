@@ -42,46 +42,124 @@ end
 %------------------------------------------------------------
 
 
-% VITERBI DECODER
 
 incoming=[0 1 1 1 0 1 1 1 0 1 0 1 1 1];
 
+
+
+input=[1 0 1 1];
+
+encoded=encoder(input);
+
+encoded(3)=0;
+
+
+
+
+% VITERBI DECODER
+
 time=0;
-pathmetric=zeros(1,8);
+global pathmetric;
+pathmetric=repmat(10000,8,10);
+state=0;
+
+%Purging the queue for reuse
+queue  = zeros( 50, 2 );
+firstq= 1;
+lastq  = 1;
+
+enqueue(state,time);
+
+global flag;
+flag=repmat(-1,8,8);
 
 
+    
+    while notEmpty()
+        
+    
+    [state,time]=dequeue();
+    if time> size(encoded,2)/2
+        return;
+    end
+    
+    received=[encoded(2*time+1),encoded(2*time+2)];
+    
+    disp(state +" "+ time); 
+    
+    value=binarify(td(state+1,time+1,3));
+    value=value(2:end);
+    
+    disp("Sequence Value: ");
+    disp(received);
+    
+    
+    disp("Trellis (Path Zero)");
+    disp(value);
+    
+    if time==0
+        zero=hd(received,value)
+    else
+        zero=hd(received,value)+pathmetric(state+1,time+1)
+    end
+    metricupdate(state,time,zero,0)
+    
+    
+    value=binarify(td(state+1,time+1,4));
+    value=value(2:end);
+    
+    disp("Trellis (Path One): ");
+    disp(value);
+    if time==0
+        one= hd(received,value)
+    else
+        one= hd(received,value)+pathmetric(state+1,time+1)
+    end
+    metricupdate(state,time,one,1)
+    
+    
+    
+    disp(" ");
+   end
+    
+
+function pm=metricupdate(state, time, new_metric,path)
+    
+    global pathmetric;
+    global td;
+    global flag;
+    next=td(state+1,time+1,path+1)
+    
+    if pathmetric(next+1,time+2) > new_metric
+        pathmetric(next+1,time+2)=new_metric;
+        
+        if flag(next+1,time+2)==-1
+            enqueue(next,time+1);
+            disp("Enqueued " + next+" , " + (time+1));
+        end
+        flag(next+1,time+2)=state;
+    end
+ 
+    pm=pathmetric;
+    
+end 
 
 
+% 2-bit Hamming Distance Calculator
+function z=hd(x,y)
+z=0;
+if x(1)~=y(1)
+    z=z+1;
+end
+if x(2)~= y(2)
+    z=z+1;
+end
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% CONVOLUTIONAL ENCODER
-function output=encoder(input)
+function encoded=encoder(input)
     states=zeros(1,4);
     index=1;
-    output=zeros(1,2);
+   	encoded=zeros(1,2);
     while(sum(states)>0 || size(input,2)>0)
 
         states = circshift(states,1);   
@@ -97,21 +175,14 @@ function output=encoder(input)
         g2=mod(sum(states([1 2 4])),2);
 
 
-        output(index)=g1;
-        output(index+1)=g2;
+        encoded(index)=g1;
+        encoded(index+1)=g2;
 
         index=index+2;
 
     end
 
 end
-
-
-
-
-
-
-
 
 
 
