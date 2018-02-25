@@ -9,11 +9,13 @@ firstq= 1;
 lastq  = 1;
 
 global td;
-td=zeros(8,8,2);
+td=zeros(8,8,4);
 for i=1:8
     for j=1:8
     td(i,j,1)=-1;
     td(i,j,2)=-1;
+    td(i,j,3)=-1;
+    td(i,j,4)=-1;
     end
 end
 
@@ -28,12 +30,45 @@ while notEmpty()
    [state,time]=dequeue();
    
    td=path(state,time,td);
-   if(time+
+   if time+1 <8
    enqueue(td(state+1,time+1,1),time+1);
    enqueue(td(state+1,time+1,2),time+1);
-   
+   end
 
 end
+
+
+% TRELLIS DIAGRAM IS 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -42,15 +77,26 @@ end
 
 function y=path(state,time,trellisdiag)
 
-    if time == 8
-        return
-    end
     y=trellisdiag;
     [zero,one]=nextState(state);
-
-    y(state+1,time+1)=zero;
+    [zero_o,one_o]=output(state);
+    y(state+1,time+1,1)=zero;
+    y(state+1,time+1,3)=zero_o;
     y(state+1,time+1,2)=one;
-  
+    y(state+1,time+1,4)=one_o;
+    
+end
+
+function [zero,one] = output(i)
+ states=binarify(i);
+ states = [0, states];
+ zero=[mod(sum(states([1 2 3 4])),2),mod(sum(states([1 2 4])),2)];
+ zero=decify(zero);
+ 
+ states(1)=1;
+ one=[mod(sum(states([1 2 3 4])),2),mod(sum(states([1 2 4])),2)];
+ one=decify(one);
+ 
 end
 
 function [zero,one] = nextState(i)
@@ -61,6 +107,10 @@ function [zero,one] = nextState(i)
  states(1)=1;
  one=decify(states);
 end
+
+
+
+
 
 
  function bin=binarify(dec_nr)
