@@ -41,13 +41,14 @@ while notEmpty()
 end
 
 
-function y=path(state,time,trellisdiag)
+function y=path(state,time)
 
+    global td;
     if time == 8
         return
     end
     
-    y=trellisdiag;
+    y=td;
     disp("Time: "+ time);
     disp("State "+state);
     
@@ -63,7 +64,7 @@ function y=path(state,time,trellisdiag)
  
     
     
-    
+  
     %nextState(zero)
     %nextState(one)
     
