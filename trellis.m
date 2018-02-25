@@ -49,6 +49,7 @@ incoming=[0 1 1 1 0 1 1 1 0 1 0 1 1 1];
 
 input=[1 0 1 1];
 
+global encoded;
 encoded=encoder(input);
 
 encoded(3)=0;
@@ -60,7 +61,7 @@ encoded(3)=0;
 
 time=0;
 global pathmetric;
-pathmetric=repmat(10000,8,10);
+pathmetric=repmat(10000,size(encoded,2)/2,size(encoded,2)/2+1);
 state=0;
 
 %Purging the queue for reuse
@@ -71,7 +72,7 @@ lastq  = 1;
 enqueue(state,time);
 
 global flag;
-flag=repmat(-1,8,8);
+flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
 
 
     
@@ -120,19 +121,41 @@ flag=repmat(-1,8,8);
     
     
     disp(" ");
-   end
+    end
     
 
+  %Minimum Path Metric
+    x=(size(encoded,2)/2);
+    [min_v,min_i]=min(pathmetric(:,x));
+    
+    correctpath=[min_i];
+
+    while x>1
+        min_i=correctpath(1);
+        x=x-1;
+        correctpath=[flag(min_i+1,x),correctpath]
+    end
+    
+ 
+    
+    
+    
+    
+    
+    
 function pm=metricupdate(state, time, new_metric,path)
     
     global pathmetric;
     global td;
     global flag;
+    global encoded;
     next=td(state+1,time+1,path+1)
     
     if pathmetric(next+1,time+2) > new_metric
         pathmetric(next+1,time+2)=new_metric;
-        
+    if time+2 > size(encoded,2)/2
+        return
+    end
         if flag(next+1,time+2)==-1
             enqueue(next,time+1);
             disp("Enqueued " + next+" , " + (time+1));
