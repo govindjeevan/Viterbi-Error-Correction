@@ -1,10 +1,6 @@
 
 i=0;j=0;
 
-% states=zeros(1,3);
-
-
-
 global queue;
 queue  = zeros( 50, 2 );
 global firstq;
@@ -13,13 +9,13 @@ firstq= 1;
 lastq  = 1;
 
 global td;
-td=zeros(8,8,2);
-
+td=zeros(8,8,4);
 for i=1:8
     for j=1:8
-    
     td(i,j,1)=-1;
     td(i,j,2)=-1;
+    td(i,j,3)=-1;
+    td(i,j,4)=-1;
     end
 end
 
@@ -34,42 +30,51 @@ while notEmpty()
    [state,time]=dequeue();
    
    td=path(state,time,td);
+   if time+1 <8
    enqueue(td(state+1,time+1,1),time+1);
    enqueue(td(state+1,time+1,2),time+1);
-   
+   end
 
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function y=path(state,time,trellisdiag)
 
-    if time == 8
-        return
-    end
-    
     y=trellisdiag;
-    disp("Time: "+ time);
-    disp("State "+state);
-    
-    
-    
     [zero,one]=nextState(state);
-    
-    
-    y(state+1,time+1)=zero;
+    [zero_o,one_o]=output(state);
+    y(state+1,time+1,1)=zero;
+    y(state+1,time+1,3)=zero_o;
     y(state+1,time+1,2)=one;
-  
-    % y=path(one+1,time+1,y);
+    y(state+1,time+1,4)=one_o;
+    
+end
+
+function [zero,one] = output(i)
+ states=binarify(i);
+ states = [0, states];
+ zero=[mod(sum(states([1 2 3 4])),2),mod(sum(states([1 2 4])),2)];
+ zero=decify(zero);
  
-    
-    
-    
-    %nextState(zero)
-    %nextState(one)
-    
-    %trellisdiag(zero+1,time+2,1)=path(zero,time+1);
-    %trellisdiag(one+1,time+2,2)=path(one,time+1);
-    
+ states(1)=1;
+ one=[mod(sum(states([1 2 3 4])),2),mod(sum(states([1 2 4])),2)];
+ one=decify(one);
+ 
 end
 
 function [zero,one] = nextState(i)
@@ -84,7 +89,7 @@ end
 
 
 
-    
+
 
  function bin=binarify(dec_nr)
 bin=zeros(1,3);
@@ -112,40 +117,38 @@ end
 
 
 function x=notEmpty()
-global lastq;
-global queue;
-global firstq;
-
-if firstq==lastq
-    x=0;
-else x=1;
+    global lastq;
+    global firstq;
+    if firstq==lastq
+        x=0;
+    else
+        x=1;
+    end
 end
 
-end
 function q= enqueue(state,time)
-global lastq;
-global queue;
-queue(lastq,1)=state;
-queue(lastq,2)=time;
-lastq=lastq+1;
-q=queue;
+    global lastq;
+    global queue;
+    queue(lastq,1)=state;
+    queue(lastq,2)=time;
+    lastq=lastq+1;
+    q=queue;
 end
 
 function [state,time]=dequeue()
-global firstq;
-global queue;
-state=queue(firstq,1);
-time=queue(firstq,2);
-firstq=firstq+1;
+    global firstq;
+    global queue;
+    state=queue(firstq,1);
+    time=queue(firstq,2);
+    firstq=firstq+1;
 end
 
 
 
 function y=decify(x)
-sum =0;
-
-for i=1:length(x)
-    sum=sum+x(i)*2^(length(x)-i);
-end
- y=sum;
+    sum =0;
+    for i=1:length(x)
+        sum=sum+x(i)*2^(length(x)-i);
+    end
+    y=sum;
 end

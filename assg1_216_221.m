@@ -1,4 +1,4 @@
-
+%{
 input=[1 0 1 0 1 0 1 1 1 0 ];
 states=zeros(1,10);
 index=1;
@@ -25,7 +25,7 @@ while(sum(states)>0 || size(input,2)>0)
     index=index+2;
     
 end
-
+%}
 
 input=[1 0 1 1];
 states=zeros(1,4);
