@@ -4,7 +4,8 @@ global td;
 global firstq;
 global lastq;
 global encoded;
-
+global s;
+s=2^3;
 %INITIALIZING A QUEUE
 initializeQ()
 
@@ -29,7 +30,7 @@ errorcode(1)=1;
 errorcode(2)=1;
 errorcode(15)=0;
 errorcode(16)=0;
-errorcode(12)=0;
+
 errorcode(11)=1;
 
 %Purging the queue for reuse
@@ -53,7 +54,6 @@ verify(corrected);
 
 
 
-
 function q=initializeQ()
 global firstq;
 global queue;
@@ -69,10 +69,11 @@ function td=generatetrellis(td)
 
 state=0;
 time=0;
+global s;
 
-td=zeros(8,8,4);
-for i=1:8
-    for j=1:8
+td=zeros(s,s,4);
+for i=1:s
+    for j=1:s
     td(i,j,1)=-1;
     td(i,j,2)=-1;
     td(i,j,3)=-1;
@@ -85,7 +86,7 @@ while notEmpty()
    [state,time]=dequeue();
    
    td=path(state,time,td);
-   if time+1 <8
+   if time+1 <s
    enqueue(td(state+1,time+1,1),time+1);
    enqueue(td(state+1,time+1,2),time+1);
    end
@@ -124,9 +125,11 @@ end
 
 % VITERBI DECODER
 
+
 function correctpath=viterbi(encoded)
 
 global pathmetric;
+global s;
 pathmetric=repmat(10000,size(encoded,2)/2,size(encoded,2)/2+1);
 global td;
 
@@ -134,10 +137,8 @@ time=0;state=0;
 enqueue(state,time);
 
 global flag;
-flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
+flag=repmat(-1,s,size(encoded,2)/2);
 
-
-    
     while notEmpty()
         
     
@@ -179,9 +180,6 @@ flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
         one= hd(received,value)+pathmetric(state+1,time+1)
     end
     metricupdate(state,time,one,1)
-    
-    
-    
     disp(" ");
     end
     
