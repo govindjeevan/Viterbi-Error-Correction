@@ -6,7 +6,9 @@ for i=0:2.^length-1
     codeword = encoder(dataword);
     for i = 1:size(codeword,2)
     
+    end
 end
+
 
 function output=encoder(input)
     states=zeros(1,4);

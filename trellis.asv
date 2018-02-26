@@ -1,14 +1,75 @@
 
-i=0;j=0;
-
 global queue;
-queue  = zeros( 50, 2 );
+global td;
 global firstq;
 global lastq;
+global encoded;
+
+%INITIALIZING A QUEUE
+initializeQ()
+
+
+td=generatetrellis(td)
+% TRELLIS DIAGRAM FOR THE CONVOLUTIONAL CODE IS NOW AVAILABLE
+%------------------------------------------------------------
+
+
+%%GIVE THE INPUT HERE
+
+input=[1 0 1 1 0 0];
+
+% ENCODE THE INPUT
+encoded=encoder(input);
+
+
+
+% INTRODUCE ERRORS TO THE ENCODED WORD
+errorcode=encoded;
+errorcode(1)=1;
+errorcode(2)=1;
+errorcode(15)=0;
+errorcode(16)=0;
+errorcode(12)=0;
+errorcode(16)=0;
+
+%Purging the queue for reuse
+initializeQ()
+
+
+% CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
+correctpath=viterbi(errorcode);
+corrected=corrector(correctpath)
+encoded
+
+
+%VERIFYING THE CORRECTED CODEWORD
+%COMPARING IT TO THE ENCODED WORD
+verify(corrected);
+
+
+
+
+
+
+
+
+
+function q=initializeQ()
+global firstq;
+global queue;
+global lastq;
+queue  = zeros( 50, 2 );
 firstq= 1;
 lastq  = 1;
+q=queue;
+end
 
-global td;
+
+function td=generatetrellis(td)
+
+state=0;
+time=0;
+
 td=zeros(8,8,4);
 for i=1:8
     for j=1:8
@@ -18,13 +79,7 @@ for i=1:8
     td(i,j,4)=-1;
     end
 end
-
-state=0;
-time=0;
-
 enqueue(state,time);
-
-
 while notEmpty()
     
    [state,time]=dequeue();
@@ -36,47 +91,36 @@ while notEmpty()
    end
 
 end
-
-
-% TRELLIS DIAGRAM FOR THE CONVOLUTIONAL CODE IS NOW AVAILABLE
-%------------------------------------------------------------
+end
 
 
 
 
-
-
-input=[1 0 1 1];
-
+function success = verify(corrected)
+k=1;
 global encoded;
-encoded=encoder(input);
-errorcode=encoded;
-errorcode(3)=0;
-errorcode(5)=1;
+success=1;
 
+if size(encoded,2) ~= size(corrected,2)
+    success=0;
+end
+while k < size(encoded,2)
+    if corrected(k)~=encoded(k)
+        success=0;
+    end
+    k=k+1;
+end
 
-%Purging the queue for reuse
-queue  = zeros( 50, 2 );
-firstq= 1;
-lastq  = 1;
+if success==1
+    disp("Correction Successful"); 
+else
+    disp("Correction Unsuccessful");
+end
+
+end
 
 
 % VITERBI DECODER
-
-
-
-
-correctpath=viterbi(errorcode)
-corrected=corrector(correctpath)
-
-
-k=1;
-detected=1;
-while k < size(encoded,1)
-    if corrected(k)~=encoded(k)
-        
-
-
 
 function correctpath=viterbi(encoded)
 
@@ -169,8 +213,8 @@ flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
         if k == size(correctpath,2)
             disp("Output 0: "+td(i+1,time+1,3));
             o=binarify(td(i+1,time+1,3));
-            o=o(2:end)
-            corrected=[corrected,o]
+            o=o(2:end);
+            corrected=[corrected,o];
             corrected=corrected(3:end);
             return
         end
@@ -178,15 +222,15 @@ flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
         if td(i+1,time+1,1)==correctpath(k+1)
            disp("Output 0: "+ td(i+1,time+1,3));
            o=binarify(td(i+1,time+1,3));
-           o=o(2:end)
-           corrected=[corrected,o]
+           o=o(2:end);
+           corrected=[corrected,o];
         end
         
         if td(i+1,time+1,2)==correctpath(k+1)
            disp("Output 1: "+ td(i+1,time+1,4));
             o=binarify(td(i+1,time+1,4));
-            o=o(2:end)
-            corrected=[corrected,o]
+            o=o(2:end);
+            corrected=[corrected,o];
         end 
         k=k+1;
         time=time+1;
