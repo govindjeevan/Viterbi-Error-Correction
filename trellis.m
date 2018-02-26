@@ -50,9 +50,9 @@ input=[1 0 1 1];
 
 global encoded;
 encoded=encoder(input);
-
-encoded(3)=0;
-encoded(5)=1;
+errorcode=encoded;
+errorcode(3)=0;
+errorcode(5)=1;
 
 
 %Purging the queue for reuse
@@ -66,12 +66,21 @@ lastq  = 1;
 
 
 
-correctpath=viterbi(encoded)
+correctpath=viterbi(errorcode)
 corrected=corrector(correctpath)
 
 
+k=1;
+detected=1;
+while k < size(encoded,1)
+    if corrected(k)~=encoded(k)
+        detected=0;
+    end
+end
 
-
+if detected==1
+    disp("Successful"); 
+end
 function correctpath=viterbi(encoded)
 
 global pathmetric;
