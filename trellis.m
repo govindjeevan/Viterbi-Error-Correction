@@ -298,8 +298,8 @@ function encoded=encoder(input)
 
         input=input(2:end);
 
-        g1=mod(sum(states([1 2 3 4])),2);
-        g2=mod(sum(states([1 2 4])),2);
+        g1=caluc_g1(states);
+        g2=caluc_g2(states)
 
 
         encoded(index)=g1;
@@ -310,7 +310,6 @@ function encoded=encoder(input)
     end
 
 end
-
 
 
 
@@ -329,11 +328,11 @@ end
 function [zero,one] = output(i)
  states=binarify(i);
  states = [0, states];
- zero=[mod(sum(states([1 2 3 4])),2),mod(sum(states([1 2 4])),2)];
+ zero=[caluc_g1(states),caluc_g2(states);];
  zero=decify(zero);
  
  states(1)=1;
- one=[mod(sum(states([1 2 3 4])),2),mod(sum(states([1 2 4])),2)];
+ one=[caluc_g1(states),caluc_g2(states)];
  one=decify(one);
  
 end
@@ -382,6 +381,15 @@ function x=notEmpty()
     end
 end
 
+
+function g1=caluc_g1(states)
+g1=mod(sum(states([1 2 3 4])),2);
+end
+
+function g2=caluc_g2(states)
+g2=mod(sum(states([1 2 4])),2);
+end
+
 function q= enqueue(state,time)
     global lastq;
     global queue;
@@ -398,6 +406,7 @@ function [state,time]=dequeue()
     time=queue(firstq,2);
     firstq=firstq+1;
 end
+
 
 
 function y=decify(x)
