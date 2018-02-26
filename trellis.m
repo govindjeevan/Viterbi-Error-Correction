@@ -61,26 +61,34 @@ firstq= 1;
 lastq  = 1;
 
 
-% VITERBI DECODER
 
 
 
 
 correctpath=viterbi(errorcode)
 corrected=corrector(correctpath)
+verify(corrected)
 
 
+function success = verify(corrected)
 k=1;
-detected=1;
+global encoded;
+success=1;
 while k < size(encoded,1)
     if corrected(k)~=encoded(k)
-        detected=0;
+        success=0;
     end
 end
 
-if detected==1
+if success==1
     disp("Successful"); 
 end
+
+end
+
+
+% VITERBI DECODER
+
 function correctpath=viterbi(encoded)
 
 global pathmetric;
