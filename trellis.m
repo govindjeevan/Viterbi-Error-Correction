@@ -52,22 +52,33 @@ global encoded;
 encoded=encoder(input);
 
 encoded(3)=0;
+encoded(5)=1;
 
-
-
-
-% VITERBI DECODER
-
-time=0;
-global pathmetric;
-pathmetric=repmat(10000,size(encoded,2)/2,size(encoded,2)/2+1);
-state=0;
 
 %Purging the queue for reuse
 queue  = zeros( 50, 2 );
 firstq= 1;
 lastq  = 1;
 
+
+% VITERBI DECODER
+
+
+
+
+correctpath=viterbi(encoded)
+corrected=corrector(correctpath)
+
+
+
+
+function correctpath=viterbi(encoded)
+
+global pathmetric;
+pathmetric=repmat(10000,size(encoded,2)/2,size(encoded,2)/2+1);
+global td;
+
+time=0;state=0;
 enqueue(state,time);
 
 global flag;
@@ -127,7 +138,7 @@ flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
     x=(size(encoded,2)/2);
     [min_v,min_i]=min(pathmetric(:,x));
     
-    correctpath=[min_i];
+    correctpath=[min_i,min_i-1]
 
     while x>1
         min_i=correctpath(1);
@@ -136,7 +147,10 @@ flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
     end
     
 
-    corrected=corrector(correctpath)
+    
+    end
+
+    
     
     function corrected=corrector(correctpath)
     global td;
@@ -145,10 +159,12 @@ flag=repmat(-1,size(encoded,2)/2,size(encoded,2)/2);
     time=0;
     corrected=[0,0];
     while k< size(correctpath,2)+1
-        i=correctpath(k);
+        i=correctpath(k)
         if k == size(correctpath,2)
             disp("Output 0: "+td(i+1,time+1,3));
-            corrected=[corrected,binarify(td(i+1,time+1,3))]
+            o=binarify(td(i+1,time+1,3));
+            o=o(2:end)
+            corrected=[corrected,o]
             corrected=corrected(3:end);
             return
         end
