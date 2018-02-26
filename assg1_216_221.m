@@ -22,7 +22,7 @@ td=generatetrellis(td)
 
 %%GIVE THE INPUT HERE
 
-input=[1 0 1 1 1 0];
+input=[1 0 1 1 0 0 0];
 
 % ENCODE THE INPUT
 encoded=encoder(input);
@@ -32,7 +32,8 @@ encoded=encoder(input);
 % INTRODUCE ERRORS TO THE ENCODED WORD
 errorcode=encoded;
 errorcode(1)=1;
-errorcode(2)=1;
+errorcode(2)=0;
+errorcode(5)=1;
 errorcode(15)=0;
 errorcode(16)=0;
 
@@ -44,10 +45,13 @@ initializeQ()
 
 % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
 correctpath=viterbi(errorcode);
+
 corrected=corrector(correctpath)
 encoded
 
+errorcode
 
+corrected
 %VERIFYING THE CORRECTED CODEWORD
 %COMPARING IT TO THE ENCODED WORD
 verify(corrected);
