@@ -4,8 +4,13 @@ global td;
 global firstq;
 global lastq;
 global encoded;
+global n;
 global s;
-s=2^3;
+
+n=4;
+s=2^(n-1);
+
+
 %INITIALIZING A QUEUE
 initializeQ()
 
@@ -196,8 +201,6 @@ flag=repmat(-1,s,size(encoded,2)/2);
         correctpath=[flag(min_i+1,x),correctpath]
     end
     
-
-    
     end
 
     
@@ -205,7 +208,6 @@ flag=repmat(-1,s,size(encoded,2)/2);
     function corrected=corrector(correctpath)
     global td;
     k=2;
-    i=correctpath(k);
     time=0;
     corrected=[0,0];
     while k< size(correctpath,2)+1
