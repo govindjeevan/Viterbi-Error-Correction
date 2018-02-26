@@ -67,7 +67,7 @@ lastq  = 1;
 
 correctpath=viterbi(errorcode)
 corrected=corrector(correctpath)
-verify(corrected)
+verify(corrected);
 
 
 function success = verify(corrected)
