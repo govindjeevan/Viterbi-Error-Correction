@@ -22,7 +22,7 @@ td=generatetrellis(td)
 
 %%GIVE THE INPUT HERE
 
-input=[1 0 1 1 0 0];
+input=[1 0 1 1 1 0];
 
 % ENCODE THE INPUT
 encoded=encoder(input);
