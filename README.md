@@ -15,4 +15,4 @@ The command window will display the
 
 if corrected succesfully, it will display "Correction Succesful"
 
-
+![Plot](Viterbi.jpg)
