@@ -1,4 +1,3 @@
-
 global queue;
 global td;
 global firstq;
@@ -8,7 +7,7 @@ global n;
 global s;
 
 n=4;
-s=2^(n-1);
+s=2^(n-1)+10;
 
 
 %INITIALIZING A QUEUE
@@ -22,27 +21,16 @@ td=generatetrellis(td)
 
 %%GIVE THE INPUT HERE
 
-input=[1 0 1 1 0 0];
-
-% ENCODE THE INPUT
-
-
-
-% INTRODUCE ERRORS TO THE ENCODED WORD
-
-%Purging the queue for reuse
-initializeQ()
-
 length = 2
 count = 0
-for i=0:2.^length-1
+for i=8:31
     dataword = binarify(i);
     
     encoded = encoder(dataword);
     for l = 1:size(encoded,2)
         select = [1:size(encoded,2)];
         total = 0;
-        temp = combnk(select,l);
+        temp = encoded;
         for j=1:size(temp,1)
             errorcode = encoded
             errorcode(select(j),:) = ~errorcode(select(j),:)%negate(encoded, select(j))%;
@@ -59,12 +47,30 @@ for i=0:2.^length-1
     end
 end
 
-% CORRECTING ERROR CODE TO GET encoded USING VITERBI
+
+
+% INTRODUCE ERRORS TO THE ENCODED WORD
+errorcode=encoded;
+errorcode(1)=1;
+errorcode(2)=1;
+errorcode(15)=0;
+errorcode(16)=0;
+
+errorcode(11)=1;
+
+%Purging the queue for reuse
 
 
 
-%VERIFYING THE CORRECTED encoded
+% CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
+correctpath=viterbi(errorcode);
+corrected=corrector(correctpath)
+encoded
+
+
+%VERIFYING THE CORRECTED CODEWORD
 %COMPARING IT TO THE ENCODED WORD
+verify(corrected);
 
 
 
@@ -146,10 +152,10 @@ end
 
 
 function correctpath=viterbi(encoded)
-
+initializeQ();
 global pathmetric;
 global s;
-pathmetric=repmat(10000,s,size(encoded,2)/2+1);
+pathmetric=repmat(10000,size(encoded,2)/2,size(encoded,2)/2+1);
 global td;
 
 time=0;state=0;
