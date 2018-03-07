@@ -19,11 +19,12 @@ s=2^(n-1);
 initializeQ();
 
 %%GIVE THE INPUT HERE
+%A DEFAULT ONE IS SELECTED HERE
 
 input=[1 0 1 0 0 1 0 0 1];
-encoded=encoder(input);
+encoded=encoder(input);       %THE FUNCTION GENERATES THE ENCODED SEQUENCE BASED ON THE GENERATORS
 maxtime=size(encoded,2)/2+1;
-td=generatetrellis(td);
+td=generatetrellis(td);       %THIS FUNCTION GENERATES THE TRELLIS REQUIRED FOR THE IMPLEMENTATION
 initializeQ();
 
 
@@ -45,10 +46,10 @@ for k=1:4
     errorcode(y)=~errorcode(y);
     
     total(k)=total(k)+1;
-    % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
-    correctpath=viterbi(errorcode);
+                                        
+    correctpath=viterbi(errorcode);     % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
 
-    corrected=corrector(correctpath);
+    corrected=corrector(correctpath);   % GENERATING THE CORRECTED OUTPUT USING TRELLIS DIAGRAM TO VERIFY ITS CORRECTNESS
 
     if verify(corrected)~=1
         count(k,1)=count(k,1)+1;
@@ -63,8 +64,9 @@ errorrate=sum(count)/sum(total)*100
 percent=(total-count)/total*100;
 percent=percent(:,1)
 k=[1:4];
+==================>% PLOTTING THE GRAPH OF THE ERROR PERCENTAGES<===============
 figure
-graph=plot(percent,'b --o')
+graph=plot(percent,'b --o')                             
 title('Convolutional Encoder/Decoder Viterbi Plot I')
 xlabel('Error Bits')
 ylabel('Success %')
@@ -80,7 +82,7 @@ ylim([0 100])
 errorrate
 end
 
-%=======> CONVOLUTIONAL ENCODER FUNCTION <============
+%=======> CONVOLUTIONAL ENCODER FUNCTION <======================================
 function encoded=encoder(input)
     states=zeros(1,4);
     index=1;
@@ -158,7 +160,7 @@ function y=path(state,time,trellisdiag)
     
 end
 
-% DETERMINES THE OUTPUT OF A STATE FOR 0 AND 1 INPUT
+% FUNCTION THAT DETERMINES THE OUTPUT OF A STATE FOR 0 AND 1 INPUT
 function [zero,one] = output(i)
  global n;
  states=de2bi(i,'left-msb');
@@ -174,7 +176,7 @@ function [zero,one] = output(i)
  
 end
 
-% DETERMINES THE NEXT STATE FOR 0 AND 1 INPUT
+% FUNCTION TO DETERMINE THE NEXT STATE FOR 0 AND 1 INPUT
 
 function [zero,one] = nextState(i)
  global n;
@@ -191,7 +193,7 @@ function [zero,one] = nextState(i)
 end
 
 
-
+%FUNCTION TO CALCULATE VALUE OBTAINED FROM THE GENERATORS
 function g1=caluc_g1(states)
 g1=mod(sum(states([1 2 3 4])),2);
 end
