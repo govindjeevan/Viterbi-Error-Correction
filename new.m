@@ -9,18 +9,21 @@ global s;
 global maxtime;
 global flag;
 global pathmetric;
-
+global indexerror;
+global detect;
+detect=0;
+indexerror=0;
 maxtime=8;
-n=4;
+n=10;
 s=2^(n-1);
-
+maxerror=2;
 
 %INITIALIZING A QUEUE
 initializeQ();
 
 %%GIVE THE INPUT HERE
 
-input=[1 0 1 0 0 1 0 0 1];
+input=[1 0 1];
 encoded=encoder(input);
 maxtime=size(encoded,2)/2+1;
 td=generatetrellis(td);
@@ -31,44 +34,51 @@ initializeQ();
 %------------------------------------------------------------
 
 
-total=zeros(4,1);
-count=zeros(4,1);
+total=zeros(maxerror,1);
+count=zeros(maxerror,1);
+detected=zeros(maxerror,1);
 
 
-
-
-function graph = error_inducer()
-
-end
-
-%=======> CONVOLUTIONAL ENCODER FUNCTION <============
-function encoded=encoder(input)
-    states=zeros(1,4);
-    index=1;
-   	encoded=zeros(1,2);
-    while(sum(states)>0 || size(input,2)>0)
-
-        states = circshift(states,1);   
-        if size(input,2)
-            states(1)=input(1);    
-        else
-            states(1)=0;
-        end
-
-        input=input(2:end);
-
-        g1=caluc_g1(states);
-        g2=caluc_g2(states);
-
-
-        encoded(index)=g1;
-        encoded(index+1)=g2;
-
-        index=index+2;
-
+for k=1:maxerror
+    for i=1:50
+    errorcode=encoded;
+    y = randsample(size(encoded,2),k)
+    errorcode(y)=~errorcode(y);
+    
+    total(k)=total(k)+1;
+    % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
+    correctpath=viterbi(errorcode);
+    if detect==1
+        detected(k,1)=detected(k,1)+1;
+        detect=0;
     end
+    corrected=corrector(correctpath);
 
+    if verify(corrected)~=1
+        count(k,1)=count(k,1)+1;
+    end
+    end
 end
+
+count
+total
+
+correctrate=sum(total-count)/sum(total)*100
+detectrate=sum(detected)/sum(total)*100
+percent=(total-count)/total*100;
+percent=percent(:,1)
+k=[1:maxerror];
+figure
+graph=plot(percent,'b --o')
+title('Convolutional Encoder/Decoder Viterbi Plot I')
+xlabel('Error Bits')
+ylabel('Success %')
+ylim([0 100])
+
+
+detectrate
+correctrate
+
 
 
 
@@ -153,6 +163,7 @@ end
 
 
 
+%{
 function g1=caluc_g1(states)
 g1=mod(sum(states([1 2 3 4])),2);
 end
@@ -160,8 +171,7 @@ end
 function g2=caluc_g2(states)
 g2=mod(sum(states([1 2 4])),2);
 end
-
-%{
+%}
 
 function g1=caluc_g1(states)
 g1=mod(sum(states([5 6 8 9 10])),2);
@@ -170,7 +180,7 @@ end
 function g2=caluc_g2(states)
 g2=mod(sum(states([3 4 5 7 8 10])),2);
 end
-%}
+
 
 
 
@@ -194,10 +204,10 @@ global s;
 global maxtime;
 pathmetric=repmat(10000,s,maxtime);
 global td;
-
+global indexerror;
 time=0;state=0;
 enqueue(state,time);
-
+global detect;
 global flag;
 flag=repmat(-1,s,maxtime);
 
@@ -230,8 +240,12 @@ flag=repmat(-1,s,maxtime);
         value=[0,value];
     end
     
+    if hd(received,value)~=0
+        detect=1;
+    end
 
     if time==0
+
         one= hd(received,value);
     else
         one= hd(received,value)+pathmetric(state+1,time+1);
@@ -248,12 +262,16 @@ flag=repmat(-1,s,maxtime);
     correctpath=[min_i,min_i-1];
 
     while x>1
-        min_i=correctpath(1)
-        x=x-1
+        min_i=correctpath(1);
+        
         if min_i+1 > s
+            disp("error"+ min_i);
+            indexerror=indexerror+1;
             return
         end 
-        correctpath=[flag(min_i+1,x),correctpath]
+        x=x-1;
+        correctpath=[flag(min_i+1,x),correctpath];
+        
     end
    
     
