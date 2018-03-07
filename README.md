@@ -26,7 +26,7 @@ Change the maximum number of errors to be generated in testing.
 Run the file. 
 > ( Ctrl + Enter )
 
-Alternatively, use the ***assg1_216_221.m*** file to view all the code in one file.
+Alternatively, use the ***wholecode.m*** file to view all the code in one file.
 ## Results
 
 The initial runs were on a lower order polynomial **g1=1111** and **g2=1101** with **( 2, 1, 4 )**
