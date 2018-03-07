@@ -34,11 +34,9 @@ initializeQ();
 
 total=zeros(4,1);
 count=zeros(4,1);
-error_inducer_and_plot(encoded,count)
 
 
 
-function graph = error_inducer_and_plot(encoded,count)
 for k=1:4
     for i=1:250
     errorcode=encoded;
@@ -80,7 +78,6 @@ ylabel('Success %')
 ylim([0 100])
 
 errorrate
-end
 
 %=======> CONVOLUTIONAL ENCODER FUNCTION <======================================
 function encoded=encoder(input)
