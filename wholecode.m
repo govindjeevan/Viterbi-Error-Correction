@@ -203,7 +203,7 @@ end
 % LAST COLUMN OF PATH METRIC ARRAY SHOWS THE FINAL PATH METRIC AFTER
 % COMPLETE TRAVERSAL
 
-    function correctpath=viterbi(encoded)
+function correctpath=viterbi(encoded)
 
     % GETTING THE VARIABLES INITIALIZED IN THE GLOBAL SPACE
     global pathmetric;
@@ -269,7 +269,7 @@ end
             x=x-1;
             correctpath=[flag(min_i+1,x),correctpath];  % APPEND THE INDICES OF THE PARENT OF THE LAST STATE IN CORRRECT PATH INTO THE CORRECT PATH BEING CONSTRUCTED
         end    
-    end
+end
   
 % HELPER FUNCTION FOR UPDATING PATH METRIC MATRIX IN VITERBI ALGORITHM
     
