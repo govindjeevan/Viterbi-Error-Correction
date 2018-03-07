@@ -1,4 +1,4 @@
-%========================================>Convolutional Coding for using Viterbi decoding and path metric<=================================================
+
 global queue;
 global td;
 global firstq;
@@ -33,51 +33,12 @@ initializeQ();
 
 total=zeros(4,1);
 count=zeros(4,1);
-error_inducer_and_plot(encoded)
 
 
 
-function graph = error_inducer_and_plot(encoded,count)
-for k=1:4
-    for i=1:250
-    errorcode=encoded;
-    y = randsample(size(encoded,2),k)
-    errorcode(y)=~errorcode(y);
-    
-    total(k)=total(k)+1;
-    % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
-    correctpath=viterbi(errorcode);
 
-    corrected=corrector(correctpath);
+function graph = error_inducer()
 
-    if verify(corrected)~=1
-        count(k,1)=count(k,1)+1;
-    end
-    end
-end
-
-count
-total
-
-errorrate=sum(count)/sum(total)*100
-percent=(total-count)/total*100;
-percent=percent(:,1)
-k=[1:4];
-figure
-graph=plot(percent,'b --o')
-title('Convolutional Encoder/Decoder Viterbi Plot I')
-xlabel('Error Bits')
-ylabel('Success %')
-ylim([0 100])
-
-figure
-graph=plot(k,total,'b --o')
-title('Convolutional Encoder/Decoder Viterbi Plot II')
-xlabel('Error Bits')
-ylabel('Success %')
-ylim([0 100])
-
-errorrate
 end
 
 %=======> CONVOLUTIONAL ENCODER FUNCTION <============
