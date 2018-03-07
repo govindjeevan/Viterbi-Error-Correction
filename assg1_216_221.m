@@ -1,4 +1,4 @@
-
+%========================================>Convolutional Coding for using Viterbi decoding and path metric<=================================================
 global queue;
 global td;
 global firstq;
