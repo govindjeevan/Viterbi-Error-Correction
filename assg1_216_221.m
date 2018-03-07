@@ -33,7 +33,7 @@ initializeQ();
 
 total=zeros(4,1);
 count=zeros(4,1);
-error_inducer_and_plot(encoded)
+error_inducer_and_plot(encoded,count)
 
 
 
