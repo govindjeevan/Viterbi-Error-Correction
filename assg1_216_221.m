@@ -1,14 +1,15 @@
 %========================================>Convolutional Coding for using Viterbi decoding and path metric<=================================================
-global queue;
-global td;
-global firstq;
-global lastq;
-global encoded;
-global n;
-global s;
-global maxtime;
-global flag;
-global pathmetric;
+% INITIALISING THE GLOBAL VARIABLES
+global queue;       % VARIABLE FOR THE QUEUE
+global td;          % VARIABLE FOR THE TRELLIS DIAGRAM
+global firstq;      % POINTS TO THE STARTING OF THE QUEUE
+global lastq;       % POINTS TO THE ENDING OF THE QUEUE
+global encoded;     % STORES THE ENCODED SEQUENCE
+global n;           % LENGTH OF THE DATAWORD BITS 
+global s;           % ROWS IN TRELLIS DIAGRAM
+global maxtime;     % VARIABLE THAT TAKED INTO ACCOUNT THE MAXIMUM TRAVERSAL IN THE TRELLIS DIAGRAM
+global flag;        % FOR CREATES COPIES 
+global pathmetric;  % FOR THR PATHMETRIC MATRIX
 
 maxtime=8;
 n=4;
@@ -39,9 +40,9 @@ count=zeros(4,1);
 
 for k=1:4
     for i=1:250
-    errorcode=encoded;
+    errorcode=encoded;                  
     y = randsample(size(encoded,2),k)
-    errorcode(y)=~errorcode(y);
+    errorcode(y)=~errorcode(y);         % INDUCING ERROR
     
     total(k)=total(k)+1;
                                         
@@ -50,7 +51,7 @@ for k=1:4
     corrected=corrector(correctpath);   % GENERATING THE CORRECTED OUTPUT USING TRELLIS DIAGRAM TO VERIFY ITS CORRECTNESS
 
     if verify(corrected)~=1
-        count(k,1)=count(k,1)+1;
+        count(k,1)=count(k,1)+1;        % INCREASING THE COUNT OF ERROR DETECTION
     end
     end
 end
