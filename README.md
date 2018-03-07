@@ -48,8 +48,6 @@ We then ran it for larger number of error bits and received the following graphs
 ## Final Words
 
 Thank you for patiently going through the project. It was a good experience working out the implementation of Trellis generationa nd Viterbi Algorithm, for which a graph algorithm similar to **djikstra's** was used after failing at a recursive approach.
-
-> Tried really really hard along the recursive lines
-> 
-MATLAB made the coding more easier and harder at the same time.
+Tried really really hard along the recursive lines, but the graph algorithm repeatedlytly enqueing and dequeuing states was the more suitable and efficient approach after all.
+MATLAB made the coding more easier and harder at the same time. 
 The project is open to bug fixes and optimizations in the future.
