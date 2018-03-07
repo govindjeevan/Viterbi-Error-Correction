@@ -1,4 +1,4 @@
-
+% Converts a binary sequence to a decimal number
 function y=decify(x)
     sum =0;
     for i=1:length(x)

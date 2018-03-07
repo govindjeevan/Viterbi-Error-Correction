@@ -9,6 +9,7 @@
 
 function correctpath=viterbi(encoded)
 
+% GETTING THE VARIABLES INITIALIZED IN THE GLOBAL SPACE
 global pathmetric;
 global s;
 global maxtime;
@@ -82,21 +83,20 @@ function pm=metricupdate(state, time, new_metric,path)
     global td;
     global flag;
     global encoded;
-    next=td(state+1,time+1,path+1);
+    next=td(state+1,time+1,path+1); % GETTING THE NEXT STATE FROMM THE TRELLIS DIAGRAM
     
     if pathmetric(next+1,time+2) > new_metric
-        pathmetric(next+1,time+2)=new_metric;
+        pathmetric(next+1,time+2)=new_metric;   %UPDATING THE PATH METRIC OF THE NEXT STATE IF IT'S CURRENT VALUE IS LESSER
     if time+2 > size(encoded,2)/2
         return
     end
         if flag(next+1,time+2)==-1
-            enqueue(next,time+1);
+            enqueue(next,time+1);   % IF THAT STATE HAS NOT BEEN VISITED BEFORE, ENQUEUE IT
             
         end
-        flag(next+1,time+2)=state;
+        flag(next+1,time+2)=state; % UPDATE THE PARENT OF THIS NEXT STATE AS THE STATE THAT UPDATED IT'S PATH METRIC LAST
     end
- 
-    pm=pathmetric;
+    pm=pathmetric;  % RETURN THE UPDATED PATH METRIC MATRIX
     
 end 
     

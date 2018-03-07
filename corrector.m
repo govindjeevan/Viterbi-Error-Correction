@@ -6,30 +6,29 @@
         global td;
         k=2;
         time=0;
-        corrected=[0,0];
-        while k< size(correctpath,2)+1
+        corrected=[0,0]; % REDUNTANT ZERO BITS TO BE REMOVED AT THE END
+        while k< size(correctpath,2)+1  % WHILE COUNT LESS THAN THE SIZE OF CORRECT PATH
             i=correctpath(k);
-            if k == size(correctpath,2)
-
-                o=binarify(td(i+1,time+1,3));
-                o=o(2:end);
-                corrected=[corrected,o];
-                corrected=corrected(3:end);
+            if k == size(correctpath,2) % WHEN THE COUNT REACHES THE LAST BIT OF CORRECT PATH
+                o=binarify(td(i+1,time+1,3)); % THE LAST INPUT WILL BE ZERO ( PURGING THE FLIP FLOPS)
+                o=o(2:end);  % O IS THE 2-BIT VALUE OF THE OUTPUT FOR INPUT ZERO
+                corrected=[corrected,o]; % APPEND THE 2 OUTPUT BITS TO THE END CORRECTED CODE
+                corrected=corrected(3:end); % REMOVE THE TWO REDUNTANT ZERO BITS ADDED IN THE BEGINING
                 return
             end
 
-            if td(i+1,time+1,1)==correctpath(k+1)
+            if td(i+1,time+1,1)==correctpath(k+1) % IF THE NEXT BIT OF CORRECT PATH MATCHES THE NEXT STATE FOR ZERO INPUT
 
-               o=binarify(td(i+1,time+1,3));
-               o=o(2:end);
-               corrected=[corrected,o];
+               o=binarify(td(i+1,time+1,3)); % O IS THE 3-BIT VALUE OF THE OUTPUT FOR INPUT ZERO
+               o=o(2:end);  % O IS THE 2-BIT VALUE OF THE OUTPUT FOR INPUT ZERO
+               corrected=[corrected,o]; % APPEND THE 2 OUTPUT BITS TO THE CORRECTED CODE
             end
 
-            if td(i+1,time+1,2)==correctpath(k+1)
+            if td(i+1,time+1,2)==correctpath(k+1) % IF THE NEXT BIT OF CORRECT PATH MATCHES THE NEXT STATE FOR 0NE INPUT
 
-                o=binarify(td(i+1,time+1,4));
-                o=o(2:end);
-                corrected=[corrected,o];
+                o=binarify(td(i+1,time+1,4)); % O IS THE 3-BIT VALUE OF THE OUTPUT FOR INPUT ONE
+                o=o(2:end); % O IS THE 2-BIT VALUE OF THE OUTPUT FOR INPUT ONE
+                corrected=[corrected,o]; APPEND THE 2 OUTPUT BITS TO THE CORRECTED CODE
             end 
             k=k+1;
             time=time+1;
