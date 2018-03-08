@@ -1,3 +1,5 @@
+% Converts a decimal number to a binary sequence in an arrya
+
  function bin=binarify(dec_nr)
     bin=zeros(1,3);
     i = 1;
