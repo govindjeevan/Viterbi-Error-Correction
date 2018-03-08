@@ -13,7 +13,7 @@ MATLAB code for  convolution code *(2, 1, 10)* decoding with **g1 = 110111** and
 ## File/Function Sequence
 The sequence of files/functions called during execution.
 >
-![Function Sequence](https://i.imgur.com/HBpvBiy.png)
+![Function Sequence](https://image.ibb.co/d1mqYS/Function_Sequence.png)
 
 > The Purpose of each file is provided in the yellow note boxes.
 
