@@ -1,4 +1,4 @@
-% Converts a decimal number to a binary sequence in an arrya
+% Converts a decimal number to a binary sequence in an array
 
  function bin=binarify(dec_nr)
     bin=zeros(1,3);
