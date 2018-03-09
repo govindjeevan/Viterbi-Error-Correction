@@ -14,7 +14,7 @@ global pathmetric;  % FOR THR PATHMETRIC MATRIX
 
 n=10;   % NUMBER OF FLIP FLOPS
 s=2^(n-1);  % NUMBER OF STATES IN TRELLIS DIAGRAM
-maxerror=4; % MAXIMUM NUMBER OF ERROR BITS TO BE INTRODUCED
+maxerror=3; % MAXIMUM NUMBER OF ERROR BITS TO BE INTRODUCED
 
 
     %INITIALIZING THE ERROR CORRECTION/DETECTION COUNTS TO ZERO
@@ -27,7 +27,7 @@ indexerror=0;
 
 %=============================>>>>>>>>  GIVE THE INPUT HERE
 %<<<<<<<<<==========================================================
-input=[1 0 1];
+input=[1 0];
 
 encoded=encoder(input); %ENCODING THE INPUT USING THE GENERATAOR FUNCTIONS
 
@@ -48,13 +48,16 @@ disp("Generating Errors and Viterbi Correction ");
 disp(encoded);
 
 
-% INTRODUCING RANDOM ERRORS IN THE CODE WORD
+% INTRODUCING ALL POSSIBLE ERRORS IN THE CODE WORD
 % NUMBER OF ERROR BITS VARY FROM 1 TO maxerror
 for k=1:maxerror
-    for i=1:50
+    
+    indexarray=[1:size(encoded,2)];
+    C=combnk(indexarray,k);
+    for i=1:size(C,1)
     errorcode=encoded;
-    y = randsample(size(encoded,2),k)
-    errorcode(y)=~errorcode(y);
+    C(i,:)
+    errorcode(C(i,:))=~errorcode(C(i,:));
     total(k)=total(k)+1;
     
     % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
@@ -77,10 +80,35 @@ count
 total
 
 
+%{
+% INTRODUCING RANDOM ERROS WITH A SAMPLING SIZE IN THE CODE WORD
+for k=1:maxerror
+    for i=1:50
+    errorcode=encoded;
+    y = randsample(size(encoded,2),k)
+    errorcode(y)=~errorcode(y);
+    
+    total(k)=total(k)+1;
+    % CORRECTING ERROR CODE TO GET CODEWORD USING VITERBI
+    correctpath=viterbi(errorcode);
+    if detect==1
+        detected(k,1)=detected(k,1)+1;
+        detect=0;
+    end
+    corrected=corrector(correctpath);
+
+    if verify(corrected)~=1
+        count(k,1)=count(k,1)+1;
+    end
+    end
+end
+
+%}
+
 %CALCULATING THE PERCENTAGES OF ERROR DETECTION, AND ERROR CORRETION
 correctrate=sum(total-count)/sum(total)*100
-detectrate=sum(detected)/sum(total)*100
-percent=(total-count)/total*100;
+detectrate=sum(detected)./sum(total)*100
+percent=(total-count)./total*100;
 percent=percent(:,1)
 k=[1:maxerror];
 
@@ -341,7 +369,7 @@ end
 
                 o=binarify(td(i+1,time+1,4)); % O IS THE 3-BIT VALUE OF THE OUTPUT FOR INPUT ONE
                 o=o(2:end); % O IS THE 2-BIT VALUE OF THE OUTPUT FOR INPUT ONE
-                corrected=[corrected,o]; APPEND THE 2 OUTPUT BITS TO THE CORRECTED CODE
+                corrected=[corrected,o]; %APPEND THE 2 OUTPUT BITS TO THE CORRECTED CODE
             end 
             k=k+1;
             time=time+1;
